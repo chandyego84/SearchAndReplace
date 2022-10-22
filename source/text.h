@@ -7,3 +7,4 @@
 
 // checks if current file has the target string
 // makes change to the target string in the file
+int SearchTargetString(char* filename, char* targetString);

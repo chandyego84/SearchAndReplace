@@ -41,7 +41,10 @@ void TraverseDirectory(char* path) {
             }
             else if (dirEntry->d_type == DT_REG) {
                 // content is a file
-                printf("File: %s\n", dirEntry->d_name);
+                // search the textfile for target string
+                char* fullFilePath = GetFilepath(dirEntry->d_name, path);
+                printf("FullFilePath: %s\n", fullFilePath);
+                SearchTargetString(fullFilePath, "sex");
             }
         }   
     }
