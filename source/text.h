@@ -1,7 +1,7 @@
 // CONTAINS: logic associated with the search and replace processing
 // performed on each file
 #include <stdio.h>
-#include <stdlib.h> // qsort()
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 

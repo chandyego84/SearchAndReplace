@@ -1,6 +1,6 @@
 #include "traversal.h"
 #include "text.h"
-
+ 
 // gets filepath using filename
 char* GetFilepath(char* filename, char* startFilepath) {
 

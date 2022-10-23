@@ -20,7 +20,7 @@ int SearchTargetString(char* filepath, char* targetString) {
         if ((pos = strstr(tempString, targetString)) != NULL) {
             // found first occurence of target string
             isFound = 1;
-            printf("Found target string in file: %s (Line %d)\n", filepath, currentLine);
+            //printf("Found target string in file: %s (Line %d)\n", filepath, currentLine);
             break;
         }
         currentLine++;

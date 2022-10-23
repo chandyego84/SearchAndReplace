@@ -11,7 +11,7 @@
 #define MAX_NUM_FILES 42 // max number of files to modify (arbitrary)
 #define BUFFER_SIZE 1000
 
-typedef struct Report {
+typedef struct Report{
     char file[PATH_MAX];
     int numberOfUpdates;
 } report;
