@@ -1,16 +1,12 @@
 #include "text.h"
 
-typedef struct Report {
-    char* file;
-    int numberOfUpdates;
-} report;
-
 int SearchTargetString(char* filepath, char* targetString) {
     
     FILE* fileToSearch;
     fileToSearch = fopen(filepath, "r");
     int currentLine = 0;
     int isFound = 0;
+    char* pos;
 
     char tempString[512];
 
@@ -21,7 +17,7 @@ int SearchTargetString(char* filepath, char* targetString) {
 
     while (fgets(tempString, 512, fileToSearch) != NULL) {
         // keep reading lines from file
-        if (strstr(tempString, targetString) != NULL) {
+        if ((pos = strstr(tempString, targetString)) != NULL) {
             // found first occurence of target string
             isFound = 1;
             printf("Found target string in file: %s (Line %d)\n", filepath, currentLine);
@@ -36,27 +32,78 @@ int SearchTargetString(char* filepath, char* targetString) {
 
 }
 
+int ReplaceAll(char *str, const char* wordToReplace, const char* newWord) {
+
+    // position: pointer to occurence of the word in str, temp: holds original string (before modification)
+    char *position, temp[BUFFER_SIZE];
+    int indexOfWordToReplace = 0;
+    int wordToReplaceLength = strlen(wordToReplace);
+    int updatedWords = 0;
+
+    // while loop will continue if both words are the same
+    if (!strcmp(wordToReplace, newWord)) {
+        return 0;
+    }
+
+    // repeat until all occurences of the current word are changed
+    while ((position = strstr(str, wordToReplace)) != NULL) {
+
+        // copy of original line
+        strcpy(temp, str);
+
+        indexOfWordToReplace = position - str; // index where word found starts in the string
+        str[indexOfWordToReplace] = '\0'; // terminates string where word found starts
+
+        // strcat new word into current string
+        // (this new word will end with '\0', so strcat rest of the current string)
+        strcat(str, newWord);
+
+        // strcat rest of the string to the current string
+        strcat(str, temp + indexOfWordToReplace + wordToReplaceLength);
+
+        updatedWords += 1;
+    }
+
+    return updatedWords;
+
+}
+
+
 // make edit to the file with target string
-int EditFile(char* filepath, char* targetString) {
+report EditFile(char* filepath, char* targetString) {
 
+    report currentFileReport; // contains info about current file being edited
     FILE* fileToEdit;
-    fileToEdit = fopen(filepath, "r+"); // open input file in read/write mode
-    
+    FILE* fileToOutput;
+    fileToEdit = fopen(filepath, "r"); // open input file in read mode
+    fileToOutput = fopen("replace.txt", "w"); // new file with modifications
+    char buffer[BUFFER_SIZE];
 
-    if (fileToEdit == NULL) {
+    if (fileToEdit == NULL || fileToOutput == NULL) {
         printf("Could not open the file to edit: %s\n", filepath);
         exit(0);
     }
 
-    char stringRead[512];
-    char newString[512];
+    strcpy(currentFileReport.file, filepath); // edit filereport filename
+    // read line from input file, write to destination file after replacing word/s
+    while (fgets(buffer, BUFFER_SIZE, fileToEdit) != NULL) {
+        // replace all occurences of the word from the line
+        currentFileReport.numberOfUpdates = ReplaceAll(buffer, targetString, "LONE");
 
-    while (!feof(fileToEdit)) {
-        // keep reading contents of the input file
-        fscanf(fileToEdit, "%s", stringRead);
-        printf("%s\n", stringRead);
+        // write string to output file after replacing it
+        fputs(buffer, fileToOutput);
     }
+    
+    // close all files
+    fclose(fileToEdit);
+    fclose(fileToOutput);
 
-    return 0;
+    // delete original path
+    remove(filepath);
+
+    // rename the output file as the original file
+    rename("replace.txt", filepath);
+
+    return currentFileReport;
 
 }

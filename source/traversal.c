@@ -17,7 +17,7 @@ char* GetFilepath(char* filename, char* startFilepath) {
 
 }
 
-void FindFilesWithTargetString(char* path, char listOfFilesWithTarget[][PATH_MAX], int* numFilesFound) {
+void FindFilesWithTargetString(char* path, report listOfFilesWithTarget[], int* numFilesFound) {
 
     struct dirent* dirEntry; // contains content for directory
     DIR* dir = opendir(path); // pointer directory
@@ -44,7 +44,8 @@ void FindFilesWithTargetString(char* path, char listOfFilesWithTarget[][PATH_MAX
                 char* fullFilePath = GetFilepath(dirEntry->d_name, path);
                 if (SearchTargetString(fullFilePath, "lone")) {
                     // file contains the target string
-                    strcpy(listOfFilesWithTarget[*numFilesFound], fullFilePath);
+                    strcpy(listOfFilesWithTarget[*numFilesFound].file, fullFilePath); 
+                    listOfFilesWithTarget[*numFilesFound].numberOfUpdates = 0;
                     *numFilesFound += 1;
                 }
             }

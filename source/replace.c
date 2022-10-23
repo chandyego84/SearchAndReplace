@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
 
     int filesFound = 0;
-    char filesWithTarget[MAX_NUM_FILES][PATH_MAX];  // files with the target string
+    report filesWithTarget[MAX_NUM_FILES];  // files with the target string
     char cwd[PATH_MAX]; // buffer for current working directory filepath
     getcwd(cwd, PATH_MAX);
 
@@ -14,8 +14,10 @@ int main(int argc, char* argv[]) {
     FindFilesWithTargetString(cwd, filesWithTarget, &filesFound);
 
     // make updates to each file with target string
+    report currentFileReport;
     for (int changes = 0; changes < filesFound; changes++) {
-        EditFile(filesWithTarget[changes], "lone");
+        currentFileReport = EditFile(filesWithTarget[changes].file, "lone");
+        printf("File (%s) Number of Changes: %d\n", currentFileReport.file, currentFileReport.numberOfUpdates);
     }
 
     return 0;

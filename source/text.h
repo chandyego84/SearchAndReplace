@@ -9,5 +9,9 @@
 // makes change to the target string in the file
 int SearchTargetString(char* filename, char* targetString); 
 
+// replaces all words in a string with newWord
+// RETURNS: number of updated words
+int ReplaceAll(char *str, const char* wordToReplace, const char* newWord);
+
 // make edit to the file with target string
-int EditFile(char* filepath, char* targetString);
+report EditFile(char* filepath, char* targetString);
