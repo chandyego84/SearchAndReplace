@@ -17,8 +17,8 @@ char* GetFilepath(char* filename, char* startFilepath) {
 
 }
 
-void TraverseDirectory(char* path) {
-    
+void FindFilesWithTargetString(char* path, char listOfFilesWithTarget[][PATH_MAX], int* numFilesFound) {
+
     struct dirent* dirEntry; // contains content for directory
     DIR* dir = opendir(path); // pointer directory
     char cwd[PATH_MAX]; // buffer for test dir filepath
@@ -36,17 +36,18 @@ void TraverseDirectory(char* path) {
             strcmp(dirEntry->d_name, ".") != 0 && strcmp(dirEntry->d_name, "..") != 0) { // filters out . and .. directories    
                 // content is a directory
                 char* fullDirPath = GetFilepath(dirEntry->d_name, cwd);
-                printf("FullDirPath: %s\n", fullDirPath);
-                TraverseDirectory(fullDirPath);
+                FindFilesWithTargetString(fullDirPath, listOfFilesWithTarget, numFilesFound);
             }
             else if (dirEntry->d_type == DT_REG) {
                 // content is a file
                 // search the textfile for target string
                 char* fullFilePath = GetFilepath(dirEntry->d_name, path);
-                printf("FullFilePath: %s\n", fullFilePath);
-                SearchTargetString(fullFilePath, "sex");
+                if (SearchTargetString(fullFilePath, "lone")) {
+                    // file contains the target string
+                    strcpy(listOfFilesWithTarget[*numFilesFound], fullFilePath);
+                    *numFilesFound += 1;
+                }
             }
         }   
-    }
-    
+    }    
 }
