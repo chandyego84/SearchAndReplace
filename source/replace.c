@@ -14,11 +14,11 @@ int main(int argc, char* argv[]) {
     FindFilesWithTargetString(cwd, filesWithTarget, &filesFound);
 
     // make updates to each file with target string
-    report currentFileReport;
     for (int changes = 0; changes < filesFound; changes++) {
-        currentFileReport = EditFile(filesWithTarget[changes].file, "lone");
-        printf("File (%s) Number of Changes: %d\n", currentFileReport.file, currentFileReport.numberOfUpdates);
+        EditFile(&filesWithTarget[changes], "lone");
+        printf("FILE (%s) Changes: %d\n", filesWithTarget[changes].file, filesWithTarget[changes].numberOfUpdates);
     }
+
 
     return 0;
 }

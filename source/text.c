@@ -48,6 +48,8 @@ int ReplaceAll(char *str, const char* wordToReplace, const char* newWord) {
     // repeat until all occurences of the current word are changed
     while ((position = strstr(str, wordToReplace)) != NULL) {
 
+        updatedWords += 1;
+
         // copy of original line
         strcpy(temp, str);
 
@@ -61,7 +63,6 @@ int ReplaceAll(char *str, const char* wordToReplace, const char* newWord) {
         // strcat rest of the string to the current string
         strcat(str, temp + indexOfWordToReplace + wordToReplaceLength);
 
-        updatedWords += 1;
     }
 
     return updatedWords;
@@ -70,26 +71,25 @@ int ReplaceAll(char *str, const char* wordToReplace, const char* newWord) {
 
 
 // make edit to the file with target string
-report EditFile(char* filepath, char* targetString) {
+void EditFile(report* currentReport, char* targetString) {
 
-    report currentFileReport; // contains info about current file being edited
     FILE* fileToEdit;
     FILE* fileToOutput;
+    char* filepath = currentReport->file;
     fileToEdit = fopen(filepath, "r"); // open input file in read mode
     fileToOutput = fopen("replace.txt", "w"); // new file with modifications
     char buffer[BUFFER_SIZE];
 
     if (fileToEdit == NULL || fileToOutput == NULL) {
-        printf("Could not open the file to edit: %s\n", filepath);
+        printf("Could not open the file to edit: %s\n", currentReport->file);
         exit(0);
     }
 
-    strcpy(currentFileReport.file, filepath); // edit filereport filename
     // read line from input file, write to destination file after replacing word/s
     while (fgets(buffer, BUFFER_SIZE, fileToEdit) != NULL) {
         // replace all occurences of the word from the line
-        currentFileReport.numberOfUpdates = ReplaceAll(buffer, targetString, "LONE");
-
+        currentReport->numberOfUpdates += ReplaceAll(buffer, targetString, "LONE");
+        
         // write string to output file after replacing it
         fputs(buffer, fileToOutput);
     }
@@ -103,7 +103,5 @@ report EditFile(char* filepath, char* targetString) {
 
     // rename the output file as the original file
     rename("replace.txt", filepath);
-
-    return currentFileReport;
 
 }

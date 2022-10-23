@@ -14,4 +14,4 @@ int SearchTargetString(char* filename, char* targetString);
 int ReplaceAll(char *str, const char* wordToReplace, const char* newWord);
 
 // make edit to the file with target string
-report EditFile(char* filepath, char* targetString);
+void EditFile(report* currentReport, char* targetString);
